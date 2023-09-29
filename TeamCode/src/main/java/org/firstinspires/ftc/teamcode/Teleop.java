@@ -33,8 +33,8 @@ public class Teleop extends LinearOpMode {
         wrist = hardwareMap.get(Servo.class, "wrist");
         int position = 0;
 
-        BL.setDirection(DcMotorSimple.Direction.REVERSE);
-        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        FR.setDirection(DcMotorSimple.Direction.REVERSE);
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -45,7 +45,7 @@ public class Teleop extends LinearOpMode {
         while(opModeIsActive()) {
 
             //drive code
-            double speed = .4;
+            double speed = 1;
             BL.setPower(speed * (gamepad1.left_stick_y + gamepad1.left_stick_x));
             BR.setPower(speed * (gamepad1.right_stick_y - gamepad1.left_stick_x));
             FL.setPower(speed * (gamepad1.left_stick_y - gamepad1.left_stick_x));
