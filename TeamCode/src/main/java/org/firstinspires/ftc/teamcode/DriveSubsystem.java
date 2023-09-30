@@ -4,6 +4,8 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import java.util.function.DoubleSupplier;
+
 public class DriveSubsystem extends SubsystemBase {
 
     private DcMotor BL;
@@ -20,7 +22,8 @@ public class DriveSubsystem extends SubsystemBase {
         left,
         right,
         forward,
-        backward
+        backward,
+        auto
     }
     private Direction dir = Direction.forward;
 
@@ -50,6 +53,22 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
+    public void teleDrive(DoubleSupplier LX, DoubleSupplier LY, DoubleSupplier RY, double power) {
+        setAllPower(
+                power * (LY.getAsDouble() + LX.getAsDouble()),
+                power * (RY.getAsDouble() - LX.getAsDouble()),
+                power * (LY.getAsDouble() - LX.getAsDouble()),
+                power * (RY.getAsDouble() + LX.getAsDouble())
+        );
+    }
+
+    private void setAllPower(double BL, double BR, double FL, double FR) {
+        this.BL.setPower(BL);
+        this.BR.setPower(BR);
+        this.FL.setPower(FL);
+        this.FR.setPower(FR);
+    }
+
     @Override
     public void periodic() {
         if(BL.getMode() != runMode) {
@@ -65,11 +84,13 @@ public class DriveSubsystem extends SubsystemBase {
                 BR.setPower(-power);
                 FL.setPower(-power);
                 FR.setPower(power);
-            } else {
+            } else if (dir == Direction.backward || dir == Direction.forward){
                 BL.setPower(power);
                 BR.setPower(power);
                 FL.setPower(power);
                 FR.setPower(power);
+            } else {
+                //manual control is going
             }
         }
     }
