@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.function.DoubleSupplier;
 
@@ -12,6 +16,7 @@ public class DriveSubsystem extends SubsystemBase {
     private DcMotor BR;
     private DcMotor FL;
     private DcMotor FR;
+    private Telemetry telemetry;
 
     /*public static final int right = 1;
     public static final int left = -1;
@@ -27,17 +32,18 @@ public class DriveSubsystem extends SubsystemBase {
     }
     private Direction dir = Direction.forward;
 
-    private double power;
+    private double power = 0;
     private DcMotor.RunMode runMode = DcMotor.RunMode.RUN_USING_ENCODER;
 
-    public DriveSubsystem(DcMotor BL, DcMotor BR, DcMotor FL, DcMotor FR) {
+    public DriveSubsystem(DcMotor BL, DcMotor BR, DcMotor FL, DcMotor FR, Telemetry telemetry) {
         this.BL = BL;
         this.BR = BR;
         this.FL = FL;
         this.FR = FR;
+        this.telemetry = telemetry;
 
-        BL.setDirection(DcMotorSimple.Direction.REVERSE);
-        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+//        BL.setDirection(DcMotorSimple.Direction.REVERSE);
+//        FL.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void setRunMode(DcMotor.RunMode runMode) {
@@ -60,6 +66,8 @@ public class DriveSubsystem extends SubsystemBase {
                 power * (LY.getAsDouble() - LX.getAsDouble()),
                 power * (RY.getAsDouble() + LX.getAsDouble())
         );
+        telemetry.addData("teledrive", "running");
+        telemetry.addData("power", BL.getPower());
     }
 
     private void setAllPower(double BL, double BR, double FL, double FR) {
@@ -67,10 +75,13 @@ public class DriveSubsystem extends SubsystemBase {
         this.BR.setPower(BR);
         this.FL.setPower(FL);
         this.FR.setPower(FR);
+        dir = Direction.auto;
     }
 
     @Override
     public void periodic() {
+        telemetry.addLine("periodic running");
+
         if(BL.getMode() != runMode) {
             BL.setMode(runMode);
             BR.setMode(runMode);
@@ -93,5 +104,6 @@ public class DriveSubsystem extends SubsystemBase {
                 //manual control is going
             }
         }
+        telemetry.update();
     }
 }
