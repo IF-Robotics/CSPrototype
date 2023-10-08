@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.function.DoubleSupplier;
+import java.util.function.*;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -59,15 +56,19 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
-    public void teleDrive(DoubleSupplier LX, DoubleSupplier LY, DoubleSupplier RY, double power) {
+    public void teleDrive(Gamepad gamepad1, double power) {
+        double LY = (double) gamepad1.left_stick_y;
+        double LX = (double) gamepad1.left_stick_x;
+        double RY = (double) gamepad1.right_stick_y;
         setAllPower(
-                power * (LY.getAsDouble() + LX.getAsDouble()),
-                power * (RY.getAsDouble() - LX.getAsDouble()),
-                power * (LY.getAsDouble() - LX.getAsDouble()),
-                power * (RY.getAsDouble() + LX.getAsDouble())
+                power * (LY + LX),
+                power * (RY - LX),
+                power * (LY - LX),
+                power * (RY + LX)
         );
         telemetry.addData("teledrive", "running");
         telemetry.addData("power", BL.getPower());
+        telemetry.addData("LX in subsystem", LX);
     }
 
     private void setAllPower(double BL, double BR, double FL, double FR) {
