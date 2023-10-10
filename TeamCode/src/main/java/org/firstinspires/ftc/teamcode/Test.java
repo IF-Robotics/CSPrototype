@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -13,10 +14,7 @@ public class Test {
         Teleop, Auto
     }
 
-    public DcMotor BL = null;
-    public DcMotor BR = null;
-    public DcMotor FL = null;
-    public DcMotor FR = null;
+    public DcMotorEx BL, BR, FL, FR;
     private HardwareMap hardwareMap;
 
     public DriveSubsystem driveSubsystem;
@@ -24,27 +22,27 @@ public class Test {
     public Test(/*Opmode mode*/ String mode, HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         if(/*mode == Opmode.Teleop*/ mode == "tele") {
-            initTele();
+            initTele(telemetry);
         } else {
             initAuto();
         }
-        driveSubsystem = new DriveSubsystem(BL, BR, FL, FR, telemetry);
     }
 
-    private void initTele() {
-//        CommandScheduler schduler = CommandScheduler.getInstance();
-//        schduler.reset();
+    private void initTele(Telemetry telemetry) {
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        scheduler.reset();
 
-        BL = hardwareMap.get(DcMotor.class, "BL");
-        BR = hardwareMap.get(DcMotor.class, "BR");
-        FL = hardwareMap.get(DcMotor.class, "FL");
-        FR = hardwareMap.get(DcMotor.class, "FR");
+        BL = hardwareMap.get(DcMotorEx.class, "BL");
+        BR = hardwareMap.get(DcMotorEx.class, "BR");
+        FL = hardwareMap.get(DcMotorEx.class, "FL");
+        FR = hardwareMap.get(DcMotorEx.class, "FR");
 
-        BL.setDirection(DcMotorSimple.Direction.REVERSE);
-        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        FR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        schduler.registerSubsystem(driveSubsystem);
-//        schduler.run();
+        driveSubsystem = new DriveSubsystem(BL, BR, FL, FR, telemetry);
+        scheduler.registerSubsystem(driveSubsystem);
+        scheduler.run();
     }
 
     private void initAuto() {

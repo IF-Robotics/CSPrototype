@@ -2,17 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import java.util.function.*;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private DcMotor BL;
-    private DcMotor BR;
-    private DcMotor FL;
-    private DcMotor FR;
+    private DcMotorEx BL, BR, FL, FR;
     private Telemetry telemetry;
 
     /*public static final int right = 1;
@@ -32,7 +30,7 @@ public class DriveSubsystem extends SubsystemBase {
     private double power = 0;
     private DcMotor.RunMode runMode = DcMotor.RunMode.RUN_USING_ENCODER;
 
-    public DriveSubsystem(DcMotor BL, DcMotor BR, DcMotor FL, DcMotor FR, Telemetry telemetry) {
+    public DriveSubsystem(DcMotorEx BL, DcMotorEx BR, DcMotorEx FL, DcMotorEx FR, Telemetry telemetry) {
         this.BL = BL;
         this.BR = BR;
         this.FL = FL;
@@ -69,6 +67,7 @@ public class DriveSubsystem extends SubsystemBase {
         telemetry.addData("teledrive", "running");
         telemetry.addData("power", BL.getPower());
         telemetry.addData("LX in subsystem", LX);
+        telemetry.update();
     }
 
     private void setAllPower(double BL, double BR, double FL, double FR) {
@@ -103,8 +102,11 @@ public class DriveSubsystem extends SubsystemBase {
                 FR.setPower(power);
             } else {
                 //manual control is going
+                telemetry.addLine("auto control");
             }
         }
-        telemetry.update();
+
+        telemetry.addData("drive amps", BL.getCurrent(CurrentUnit.AMPS) + BR.getCurrent(CurrentUnit.AMPS) + FL.getCurrent(CurrentUnit.AMPS) + FR.getCurrent(CurrentUnit.AMPS));
+//        telemetry.update();
     }
 }
