@@ -18,7 +18,7 @@ public class Teleop extends LinearOpMode {
 
     public Servo claw = null;
     public Servo wrist = null;
-    public double wristPosition = .85;
+    public double wristPosition = 1;
 
     @Override
     public void runOpMode() {
@@ -62,17 +62,17 @@ public class Teleop extends LinearOpMode {
             //claw
             // use .5 for full open, .4 for medium open, .3 for close on pixel, 0 for total close
             if (gamepad2.left_bumper) {
-                claw.setPosition(.4);
+                claw.setPosition(.2);
             } else if (gamepad2.right_bumper) {
-                claw.setPosition(.3);
+                claw.setPosition(.36);
             }
 
             //wrist
-            if(gamepad2.dpad_up) {
+            /*if(gamepad2.dpad_up) {
                 wristPosition = .85;
             } else if (gamepad2.dpad_down) {
                 wristPosition -= .1;
-            }
+            }*/
             wrist.setPosition(wristPosition);
 
             //dumb way
